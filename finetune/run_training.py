@@ -1,9 +1,19 @@
 """Standalone training script for DeepBranchAI VESSEL12 fine-tuning."""
 import os, sys, torch, functools
 from multiprocessing import freeze_support
+from pathlib import Path
+
+
+def find_repo_root():
+    for candidate in (Path(__file__).resolve().parent, *Path(__file__).resolve().parents):
+        if (candidate / 'deepbranchai_utils.py').exists() and (candidate / 'README.md').exists():
+            return candidate
+    raise RuntimeError('Could not find repository root')
+
 
 def main():
-    sys.path.insert(0, os.path.abspath('..'))
+    repo_root = find_repo_root()
+    sys.path.insert(0, str(repo_root))
 
     # Force single-threaded data augmentation to avoid worker OOM on Windows
     os.environ['nnUNet_n_proc_DA'] = '0'
@@ -18,8 +28,7 @@ def main():
 
     from deepbranchai_utils import setup_environment
 
-    BASE_DIR = os.path.abspath('..')
-    paths = setup_environment(BASE_DIR)
+    paths = setup_environment(repo_root)
 
     PRETRAINED_WEIGHTS = str(
         paths['nnUNet_results'] / 'Dataset4005_Mitochondria' /

@@ -92,9 +92,9 @@ Training was performed on an NVIDIA RTX A6000 (48 GB VRAM), 128 GB RAM, 24 logic
 Before training, configure nnU-Net environment variables:
 
 ```bash
-export nnUNet_raw="/path/to/nnUNet_raw"
-export nnUNet_preprocessed="/path/to/nnUNet_preprocessed"
-export nnUNet_results="/path/to/nnUNet_results"
+export nnUNet_raw="$PWD/nnUNet_raw"
+export nnUNet_preprocessed="$PWD/nnUNet_preprocessed"
+export nnUNet_results="$PWD/nnUNet_results"
 ```
 
 ## Citation
