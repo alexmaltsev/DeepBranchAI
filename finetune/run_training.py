@@ -18,7 +18,7 @@ def main():
 
     from deepbranchai_utils import setup_environment
 
-    BASE_DIR = 'F:/DeepBranchAI'
+    BASE_DIR = os.path.abspath('..')
     paths = setup_environment(BASE_DIR)
 
     PRETRAINED_WEIGHTS = str(
