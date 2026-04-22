@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.external/
+data/
+weights/
+nnUNet_raw/
+nnUNet_preprocessed/
+nnUNet_results/
+tmp/
+evaluation_results*/
+slices_2d/
+predictions_2d/
+nnunet_input_3d/
+nnunet_output_3d/
