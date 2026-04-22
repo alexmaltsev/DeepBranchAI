@@ -1,0 +1,11 @@
+nnunetv2==2.3.1
+numpy
+nibabel
+tifffile
+matplotlib
+pandas
+scikit-learn
+scipy
+SimpleITK
+jupyter
+ipykernel
