@@ -8,6 +8,12 @@ Alexander V. Maltsev†, Lisa M. Hartnell†, Luigi Ferrucci\*
 
 ---
 
+## Zenodo
+
+- [Zenodo record](https://zenodo.org/records/19363534)
+- [DeepBranchAI pretrained checkpoint](https://zenodo.org/records/19363534/files/DeepBranchAI_MitoEye_fold2.pth?download=1)
+- [DeepBranchAI VESSEL12 checkpoint](https://zenodo.org/records/19363534/files/DeepBranchAI_VESSEL12_fold2.pth?download=1)
+
 ## Overview
 
 DeepBranchAI is a 3D nnU-Net model optimized for topology-preserving segmentation of branching networks. It is trained through a cascade workflow that combines conventional machine learning, deep learning, and expert refinement to overcome the annotation bottleneck inherent in 3D volumetric segmentation.
@@ -55,7 +61,7 @@ The cascade workflow generalizes to any domain where 3D connectivity must be pre
 
 ## Repository Contents
 
-> **Note:** Full code and trained weights are being prepared for upload. This repository currently serves as a placeholder accompanying the manuscript.
+> **Note:** The current code and trained weights are available here and on Zenodo. The direct checkpoint links are listed near the top of this README.
 
 ### Notebooks
 
@@ -82,9 +88,13 @@ Large datasets and checkpoints can stay outside the repository. Pass `storage_di
 - `docs/Storage_And_Downloads.md`
 - `docs/Troubleshooting.md`
 
-### Pre-trained Weights (coming soon)
+### Pre-trained Weights
 
-Trained model weights in nnU-Net v2.3.1 format for immediate deployment or fine-tuning.
+Trained model weights in nnU-Net v2.3.1 format are available on Zenodo:
+
+- [DeepBranchAI pretrained checkpoint](https://zenodo.org/records/19363534/files/DeepBranchAI_MitoEye_fold2.pth?download=1)
+- [DeepBranchAI VESSEL12 checkpoint](https://zenodo.org/records/19363534/files/DeepBranchAI_VESSEL12_fold2.pth?download=1)
+- [Zenodo record](https://zenodo.org/records/19363534)
 
 ## Requirements
 
