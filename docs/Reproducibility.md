@@ -46,4 +46,4 @@ The command computes precision, sensitivity, specificity, accuracy, Dice, clDice
 
 The five source checkpoints and nnU-Net configuration are on [Zenodo](https://zenodo.org/records/19363534). External datasets remain at their original sources and are not redistributed here. The qualitative Figure 5 masks are included because they are compact and directly support the submitted figure.
 
-Large raw volumes, predictions, optimizer states, and third-party checkpoints are intentionally excluded from Git. The CSV provenance files identify folds and cases without preserving local filesystem paths.
+Large raw volumes, predictions, optimizer states, and third-party checkpoints are intentionally excluded from Git. The CSV provenance files use anonymous case identifiers and preserve fold assignments without retaining source filenames or local filesystem paths.

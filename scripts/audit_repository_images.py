@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Reject TIFF files and unapproved embedded raster images in the repository."""
+"""Reject private source identifiers, TIFF files, and unapproved raster images."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ RASTER_SUFFIXES = {".bmp", ".gif", ".jpeg", ".jpg", ".png", ".tif", ".tiff", ".w
 TIFF_SUFFIXES = {".tif", ".tiff"}
 TIFF_SIGNATURES = {b"II*\x00", b"MM\x00*", b"II+\x00", b"MM\x00+"}
 INLINE_IMAGE_PREFIX = "data:" + "image/"
+SENSITIVE_SOURCE_MARKERS = ("b3" + "gt", "b3" + "tp")
 
 
 def tracked_paths() -> list[Path]:
@@ -48,7 +49,11 @@ def main() -> None:
     findings = []
     for path in tracked_paths():
         relative = path.relative_to(ROOT).as_posix()
+        relative_lower = relative.lower()
         suffix = path.suffix.lower()
+        for marker in SENSITIVE_SOURCE_MARKERS:
+            if marker in relative_lower:
+                findings.append(f"Sensitive source identifier in path: {relative}")
         if suffix in TIFF_SUFFIXES:
             findings.append(f"Tracked TIFF file: {relative}")
         elif suffix in RASTER_SUFFIXES and relative not in ALLOWED_RASTER_FILES:
@@ -64,12 +69,19 @@ def main() -> None:
             text = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError):
             continue
-        if INLINE_IMAGE_PREFIX in text.lower():
+        text_lower = text.lower()
+        if INLINE_IMAGE_PREFIX in text_lower:
             findings.append(f"Inline data-image payload: {relative}")
+        for marker in SENSITIVE_SOURCE_MARKERS:
+            if marker in text_lower:
+                findings.append(f"Sensitive source identifier in file: {relative}")
 
     if findings:
         raise SystemExit("Repository image audit failed:\n- " + "\n- ".join(findings))
-    print("Repository image audit passed: no TIFF files or embedded notebook images found.")
+    print(
+        "Repository privacy audit passed: no sensitive source identifiers, TIFF files, "
+        "or embedded notebook images found."
+    )
 
 
 if __name__ == "__main__":
