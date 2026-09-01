@@ -116,7 +116,7 @@ class FinetuneConfig:
     pretrained_weights: Path | str | None = None
     pretrained_dataset_name: str = "Dataset4005_Mitochondria"
     pretrained_trainer_dir: str = "nnUNetTrainer_100epochs__nnUNetPlans__3d_fullres"
-    pretrained_fold: int = 2
+    pretrained_fold: int = 0
     train_case_names: tuple[str, ...] | None = None
     validation_case_names: tuple[str, ...] | None = None
     reference_plans: Path | str | None = None
@@ -743,7 +743,7 @@ def download_and_stage_vessel12_train_val_demo(
     if reset_demo_folders:
         config = reset_custom_finetune_folders(config, paths["base"])
 
-    checkpoint = download_and_install_pretrained_weights(paths)
+    checkpoint = download_and_install_pretrained_weights(paths, fold=config.pretrained_fold)
     training_dataset = download_and_install_vessel12_training_data(paths, overwrite=overwrite)
     staged_pairs = stage_vessel12_cases(
         config,
@@ -786,7 +786,7 @@ def download_and_stage_vessel12_example(
     if reset_demo_folders:
         config = reset_custom_finetune_folders(config, paths["base"])
 
-    checkpoint = download_and_install_pretrained_weights(paths)
+    checkpoint = download_and_install_pretrained_weights(paths, fold=config.pretrained_fold)
     training_dataset = download_and_install_vessel12_training_data(paths, overwrite=overwrite)
     demo_dir = download_vessel12_demo_data(paths)
 
@@ -1554,7 +1554,7 @@ def ensure_pretrained_weights(config: FinetuneConfig, base_dir: str | Path | Non
     checkpoint = default_pretrained_weights(config, paths["base"])
     if checkpoint.exists():
         return checkpoint
-    return download_and_install_pretrained_weights(paths)
+    return download_and_install_pretrained_weights(paths, fold=config.pretrained_fold)
 
 
 def default_vessel12_reference_plans(config: FinetuneConfig, base_dir: str | Path | None = None) -> Path:

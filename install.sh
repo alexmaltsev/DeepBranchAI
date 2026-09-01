@@ -70,11 +70,15 @@ python -m pip install --upgrade pip setuptools wheel
 
 echo
 echo "Installing PyTorch with CUDA 11.8..."
-python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+python -m pip install torch==2.2.1 torchvision==0.17.1 --index-url https://download.pytorch.org/whl/cu118
 
 echo
 echo "Installing DeepBranchAI dependencies..."
 python -m pip install -r "$SCRIPT_DIR/requirements.txt"
+
+echo
+echo "Installing the DeepBranchAI package..."
+python -m pip install -e "$SCRIPT_DIR" --no-deps
 
 echo
 echo "Registering Jupyter kernel..."

@@ -1,0 +1,7 @@
+panel,fold,case,role,model,dice,cldice
+A,4,ircad_15_009,successful,Scratch nnU-Net,0.6070688365,0.6558110726
+A,4,ircad_15_009,successful,VesselFM fine-tune,0.4228439456,0.3853207497
+A,4,ircad_15_009,successful,DeepBranchAI fine-tune,0.6212882695,0.7390598912
+B,1,ircad_01_001,challenging,Scratch nnU-Net,0.6937365302,0.6371760815
+B,1,ircad_01_001,challenging,VesselFM fine-tune,0.5408507290,0.5476323960
+B,1,ircad_01_001,challenging,DeepBranchAI fine-tune,0.7703577255,0.6771131695

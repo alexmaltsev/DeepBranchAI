@@ -1,0 +1,4 @@
+dataset,dice_percent,cldice_percent,abs_cc_error_percent
+3D-IRCADb venous system,6.43,11.72,-6.13
+Plant root CT,9.69,5.46,24.97
+AeroPath airway CT,0.11,1.94,11.67

@@ -10,9 +10,9 @@ FileNotFoundError: Pretrained checkpoint not found
 
 Check:
 
-1. Did you run the VESSEL12 download/stage block?
-2. Is the checkpoint installed under `nnUNet_results`?
-3. If not, did you set `config.pretrained_weights`?
+1. Did you run `download_and_install_pretrained_weights(paths, fold=...)`?
+2. Is the selected fold installed under `nnUNet_results`?
+3. Does `config.pretrained_fold` match the installed fold, or did you set `config.pretrained_weights` directly?
 
 Common fix:
 

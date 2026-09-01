@@ -6,6 +6,8 @@ matplotlib
 pandas
 scikit-learn
 scipy
+scikit-image
+connected-components-3d
 SimpleITK
 jupyter
 ipykernel

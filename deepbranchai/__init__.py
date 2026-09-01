@@ -1,5 +1,7 @@
 """DeepBranchAI helper package."""
 
+__version__ = "1.0.0"
+
 from .custom_finetune import (
     FinetuneConfig,
     TrainingPreflightReport,
@@ -41,6 +43,7 @@ from .destripe_demo import (
     show_destripe_overview,
 )
 from .paths import check_gpu, find_repo_root, setup_environment
+from .metrics import cldice_score, compute_binary_volume_metrics
 from .training_paths import get_preprocessing_fix_dir, get_two_d_training_dir
 from .vessel12_demo import (
     Vessel12DemoConfig,
@@ -56,6 +59,7 @@ from .vessel12_demo import (
 from .visualization import show_raw_mask_pair, show_raw_prediction_slice, show_validation_prediction_slice
 
 __all__ = [
+    "__version__",
     "DestripeDemoConfig",
     "DestripeDemoState",
     "FinetuneConfig",
@@ -64,6 +68,8 @@ __all__ = [
     "Vessel12DemoConfig",
     "Vessel12DemoState",
     "check_gpu",
+    "cldice_score",
+    "compute_binary_volume_metrics",
     "compute_annotation_metrics",
     "create_custom_finetune_folders",
     "default_pretrained_weights",

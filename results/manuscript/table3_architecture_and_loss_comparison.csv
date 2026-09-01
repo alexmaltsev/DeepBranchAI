@@ -1,0 +1,6 @@
+model,dice_mean,dice_sd,precision_mean,precision_sd,sensitivity_mean,sensitivity_sd,specificity_mean,specificity_sd,cldice_mean,cldice_sd,abs_cc_error_mean,abs_cc_error_sd,avd_percent_mean,avd_percent_sd,kappa_mean,kappa_sd
+2D U-Net,0.789,0.051,0.796,0.084,0.794,0.035,0.978,0.011,0.735,0.095,7565,3790,14.554,5.404,0.766,0.057
+3D U-Net,0.907,0.047,0.948,0.012,0.877,0.083,0.994,0.002,0.879,0.068,1267,648,9.465,7.949,0.898,0.051
+2D nnU-Net,0.890,0.046,0.910,0.050,0.874,0.067,0.990,0.006,0.879,0.041,1373,577,7.820,3.665,0.878,0.057
+DeepBranchAI (3D nnU-Net; CE + Dice),0.942,0.020,0.962,0.016,0.925,0.050,0.996,0.002,0.940,0.021,214,122,6.032,4.565,0.935,0.022
+DeepBranchAI (3D nnU-Net; CE + Dice + clDice),0.941,0.019,0.953,0.017,0.932,0.052,0.995,0.003,0.941,0.028,183,108,6.267,3.456,0.934,0.021

@@ -1,0 +1,4 @@
+z_depth,precision_mean,precision_sd,sensitivity_mean,sensitivity_sd,specificity_mean,specificity_sd,dice_mean,dice_sd,cldice_mean,cldice_sd,abs_cc_error_mean,abs_cc_error_sd,avd_percent_mean,avd_percent_sd,kappa_mean,kappa_sd
+32,0.954,0.020,0.917,0.067,0.995,0.003,0.933,0.035,0.931,0.033,230,226,6.664,5.076,0.926,0.039
+64,0.955,0.014,0.922,0.057,0.995,0.002,0.936,0.025,0.936,0.029,203,96,6.718,4.375,0.930,0.027
+128,0.962,0.016,0.925,0.050,0.996,0.002,0.942,0.020,0.940,0.021,214,122,6.032,4.565,0.935,0.022

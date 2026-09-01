@@ -11,7 +11,14 @@ from .nnunet_runner import install_weights
 
 
 ZENODO_BASE = "https://zenodo.org/records/19363534/files"
-ZENODO_PRETRAINED_WEIGHT = f"{ZENODO_BASE}/DeepBranchAI_MitoEye_fold2.pth?download=1"
+MITOEYE_FOLDS = tuple(range(5))
+DEFAULT_MITOEYE_FOLD = 0
+ZENODO_PRETRAINED_WEIGHTS = {
+    fold: f"{ZENODO_BASE}/DeepBranchAI_MitoEye_fold{fold}.pth?download=1"
+    for fold in MITOEYE_FOLDS
+}
+# Backward-compatible alias for code that imported the previous singular constant.
+ZENODO_PRETRAINED_WEIGHT = ZENODO_PRETRAINED_WEIGHTS[DEFAULT_MITOEYE_FOLD]
 ZENODO_PRETRAINED_PLANS = f"{ZENODO_BASE}/DeepBranchAI_MitoEye_nnUNetPlans.json?download=1"
 ZENODO_PRETRAINED_DATASET = f"{ZENODO_BASE}/DeepBranchAI_MitoEye_dataset.json?download=1"
 ZENODO_VESSEL12_WEIGHT = f"{ZENODO_BASE}/DeepBranchAI_VESSEL12_fold2.pth?download=1"
@@ -70,13 +77,29 @@ def _download_named_files(files_to_download: list[tuple[str, Path]]) -> None:
         download_file(url, dst)
 
 
-def download_and_install_pretrained_weights(paths: dict[str, Path]) -> Path:
-    """Download the default pretrained checkpoint and install it into nnU-Net folders."""
+def _validate_mitoeye_fold(fold: int) -> int:
+    if isinstance(fold, bool) or fold not in MITOEYE_FOLDS:
+        valid = ", ".join(str(value) for value in MITOEYE_FOLDS)
+        raise ValueError(f"MitoEye fold must be one of: {valid}")
+    return fold
+
+
+def pretrained_weight_url(fold: int = DEFAULT_MITOEYE_FOLD) -> str:
+    """Return the Zenodo download URL for a released MitoEye checkpoint fold."""
+    return ZENODO_PRETRAINED_WEIGHTS[_validate_mitoeye_fold(fold)]
+
+
+def download_and_install_pretrained_weights(
+    paths: dict[str, Path],
+    fold: int = DEFAULT_MITOEYE_FOLD,
+) -> Path:
+    """Download and install one released mitochondrial checkpoint fold."""
+    fold = _validate_mitoeye_fold(fold)
     checkpoint = (
         paths["nnUNet_results"]
         / "Dataset4005_Mitochondria"
         / "nnUNetTrainer_100epochs__nnUNetPlans__3d_fullres"
-        / "fold_2"
+        / f"fold_{fold}"
         / "checkpoint_best.pth"
     )
     if checkpoint.exists():
@@ -91,7 +114,7 @@ def download_and_install_pretrained_weights(paths: dict[str, Path]) -> Path:
 
     _download_named_files(
         [
-            (ZENODO_PRETRAINED_WEIGHT, weight_dir / "DeepBranchAI_MitoEye_fold2.pth"),
+            (pretrained_weight_url(fold), weight_dir / f"DeepBranchAI_MitoEye_fold{fold}.pth"),
             (ZENODO_PRETRAINED_PLANS, config_dir / "DeepBranchAI_MitoEye_nnUNetPlans.json"),
             (ZENODO_PRETRAINED_DATASET, config_dir / "DeepBranchAI_MitoEye_dataset.json"),
         ]

@@ -1,138 +1,112 @@
 # DeepBranchAI
 
-**A Novel Cascade Workflow Enabling Accessible 3D Branching Network Segmentation**
+**A transferable 3D segmentation model for branching networks**
 
-Alexander V. Maltsev†, Lisa M. Hartnell†, Luigi Ferrucci\*
-*Intramural Research Program, National Institute on Aging, Baltimore, MD, United States*
-†*These authors contributed equally to this work and share first authorship.*
+[![CI](https://github.com/alexmaltsev/DeepBranchAI/actions/workflows/ci.yml/badge.svg)](https://github.com/alexmaltsev/DeepBranchAI/actions/workflows/ci.yml)
+[![Zenodo](https://img.shields.io/badge/models-Zenodo-1682D4)](https://zenodo.org/records/19363534)
+[![License: CC0](https://img.shields.io/badge/license-CC0--1.0-blue)](LICENSE)
 
----
+DeepBranchAI is a released 3D nnU-Net checkpoint trained on expert-refined skeletal-muscle mitochondrial focused ion beam scanning electron microscopy (FIB-SEM) labels. It is intended as a pretrained initialization for fine-tuning on 3D branching-network segmentation tasks, where small voxel errors can disconnect branches or create false connections.
 
-## Zenodo
+The paper, **DeepBranchAI: A Transferable 3D Segmentation Model for Branching Networks**, by Alexander V. Maltsev, Lisa M. Hartnell, and Luigi Ferrucci, has been accepted in *Frontiers in Artificial Intelligence*. Final article metadata and the publisher DOI will be added after publication.
 
-- [Zenodo record](https://zenodo.org/records/19363534)
-- [DeepBranchAI pretrained checkpoint](https://zenodo.org/records/19363534/files/DeepBranchAI_MitoEye_fold2.pth?download=1)
-- [DeepBranchAI VESSEL12 checkpoint](https://zenodo.org/records/19363534/files/DeepBranchAI_VESSEL12_fold2.pth?download=1)
+## Accepted-Paper Results
 
-## Overview
+- Source-domain five-fold validation: Dice `0.942 +/- 0.020` and clDice `0.940 +/- 0.021` across 20 full 128-slice mitochondrial FIB-SEM volumes.
+- DeepBranchAI-pretrained fine-tuning had higher mean clDice than scratch nnU-Net on 3D-IRCADb venous CT, Plant CT roots, and AeroPath airway CT.
+- Relative differences in mean clDice were `11.7%`, `5.5%`, and `1.9%`, respectively.
+- Mean absolute connected-component error was `25.0%` lower for Plant CT roots and `11.7%` lower for AeroPath.
+- On 3D-IRCADb, mean Dice and clDice were `0.679` and `0.629` for DeepBranchAI-pretrained fine-tuning, compared with `0.464` and `0.360` for VesselFM fine-tuning.
 
-DeepBranchAI is a 3D nnU-Net model optimized for topology-preserving segmentation of branching networks. It is trained through a cascade workflow that combines conventional machine learning, deep learning, and expert refinement to overcome the annotation bottleneck inherent in 3D volumetric segmentation.
+The complete accepted tables, fold dispersion, paired-volume statistics, and result provenance are under [`results/`](results/README.md). Claims above are descriptive unless supported by the paired Wilcoxon/Holm-adjusted results in Table 6.
 
-Three-dimensional branching networks — mitochondria, vasculature, root systems, porous materials, neural circuits — share a common vulnerability: minor voxel misclassifications can break or amplify connectivity, distorting the network's true topology. Accurate segmentation requires volumetric (3D) models, but training those models demands far more annotated data than 2D approaches. DeepBranchAI addresses this through a cascade training framework that transforms sparse initial labels into comprehensive training sets, reducing annotation time from months to weeks.
+![Qualitative 3D-IRCADb transfer comparison](docs/assets/figure5_external_transfer.png)
 
-### Key Results
+Figure 5 compares a successful held-out 3D-IRCADb case (top) and a challenging case (bottom). Each row shows the reference mask and predictions from scratch nnU-Net, VesselFM fine-tuning, and DeepBranchAI-pretrained fine-tuning. Source masks and case metrics are included under [`results/qualitative/figure5/`](results/qualitative/figure5/README.md).
 
-- **DSC = 0.942** across 5-fold cross-validation on FIB-SEM mitochondrial networks (15 nm isotropic voxels)
-- **97.05% accuracy** on VESSEL12 lung vasculature (CT volumes) via transfer learning using only 10% of target data
-- Successful transfer across a **30,000-fold voxel size difference**, different imaging modalities, and different biological systems
+## Released Checkpoints
 
-## Cascade Training Framework
+All five mitochondrial cross-validation checkpoints, the nnU-Net plans, and the dataset configuration are archived on [Zenodo record 19363534](https://zenodo.org/records/19363534).
 
-The workflow proceeds through three stages:
+| Fold | Checkpoint |
+|---:|---|
+| 0 | [DeepBranchAI_MitoEye_fold0.pth](https://zenodo.org/records/19363534/files/DeepBranchAI_MitoEye_fold0.pth?download=1) |
+| 1 | [DeepBranchAI_MitoEye_fold1.pth](https://zenodo.org/records/19363534/files/DeepBranchAI_MitoEye_fold1.pth?download=1) |
+| 2 | [DeepBranchAI_MitoEye_fold2.pth](https://zenodo.org/records/19363534/files/DeepBranchAI_MitoEye_fold2.pth?download=1) |
+| 3 | [DeepBranchAI_MitoEye_fold3.pth](https://zenodo.org/records/19363534/files/DeepBranchAI_MitoEye_fold3.pth?download=1) |
+| 4 | [DeepBranchAI_MitoEye_fold4.pth](https://zenodo.org/records/19363534/files/DeepBranchAI_MitoEye_fold4.pth?download=1) |
 
-**Stage A — Preprocessing & Training Set Curation:** FIB-SEM volumes are aligned, denoised, and curated for topological diversity with a minimum depth of 128 Z-slices and balanced class representation.
+Fold 0 is the default single-checkpoint initialization because it was used for the accepted paper's external fine-tuning experiments. See [`MODEL_CARD.md`](MODEL_CARD.md) for architecture, training, intended-use, and evaluation details.
 
-**Stage B — Iterative Ground Truth Generation:** Initial segmentation begins with 2D Weka random forests trained on minimal annotations (~5–10 minutes). Experts correct outputs, retrain iteratively until accuracy plateaus, then transition to a 2D nnU-Net. The trained 2D model generates probability maps that experts refine into ground truth for the 3D model. Each cycle produces better drafts, creating a positive feedback loop.
+## Installation
 
-**Stage C — 3D nnU-Net Training (DeepBranchAI):** The final model trains on 360×360×128 voxel patches with 5-fold cross-validation (100 epochs). Inference uses overlapping 3D patches with stitching and weighted averaging, thresholded at 0.50.
-
-## Performance
-
-| Model | Sensitivity | Specificity | Accuracy | DSC | AVD (%) | κ |
-|---|---|---|---|---|---|---|
-| 2D U-Net | 0.721 | 0.971 | 0.947 | 0.726 | 9.26 | 0.697 |
-| 3D U-Net | 0.856 | 0.993 | 0.978 | 0.888 | 8.86 | 0.875 |
-| 2D nnU-Net | 0.880 | 0.986 | 0.976 | 0.879 | 8.87 | 0.865 |
-| **DeepBranchAI (3D nnU-Net)** | **0.925** | **0.996** | **0.989** | **0.942** | **6.04** | **0.935** |
-
-## Domain Applications
-
-The cascade workflow generalizes to any domain where 3D connectivity must be preserved:
-
-| Domain | Target Structure | Imaging Modality |
-|---|---|---|
-| Cell Biology | Mitochondrial networks | FIB-SEM |
-| Vascular Biology | Vascular networks | CT |
-| Neuroscience | Neural circuits | EM volumes |
-| Materials Science | Porous membranes | Micro-CT |
-| Geophysics | Fracture networks | Seismic volumes |
-| Plant Biology | Root systems | MRI/CT |
-| Engineering | 3D printed lattices | X-ray CT |
-
-## Repository Contents
-
-> **Note:** The current code and trained weights are available here and on Zenodo. The direct checkpoint links are listed near the top of this README.
-
-### Notebooks
-
-| Notebook | Purpose |
-|---|---|
-| `demo/Demo_Destripe.ipynb` | Wavelet-FFT filtering for stripe artifact removal |
-| `demo/Demo_VESSEL12.ipynb` | Lung vasculature segmentation demo |
-| `demo/Demo_Finetune.ipynb` | Two-case VESSEL12 fine-tuning demo with one train case, one validation case, training plots, and a validation segmentation preview |
-| `train/finetune/Finetune_VESSEL12.ipynb` | Full VESSEL12 fine-tuning workflow |
-| `train/*.ipynb` | Training, inference, preprocessing, and validation workflows |
-
-### Python Helpers
-
-Reusable workflow code lives in the `deepbranchai/` package. Existing notebooks can still import
-`deepbranchai_utils.py`, which forwards to the package modules.
-
-Large datasets and checkpoints can stay outside the repository. Pass `storage_dir` to
-`setup_environment(...)` or set `DEEPBRANCHAI_STORAGE_DIR`; the helper will place `data`,
-`weights`, `tmp`, `nnUNet_raw`, `nnUNet_preprocessed`, and `nnUNet_results` under that storage root.
-
-### Documentation
-
-- `docs/Finetune_Custom_Data.md`
-- `docs/Storage_And_Downloads.md`
-- `docs/Troubleshooting.md`
-
-### Pre-trained Weights
-
-Trained model weights in nnU-Net v2.3.1 format are available on Zenodo:
-
-- [DeepBranchAI pretrained checkpoint](https://zenodo.org/records/19363534/files/DeepBranchAI_MitoEye_fold2.pth?download=1)
-- [DeepBranchAI VESSEL12 checkpoint](https://zenodo.org/records/19363534/files/DeepBranchAI_VESSEL12_fold2.pth?download=1)
-- [Zenodo record](https://zenodo.org/records/19363534)
-
-## Requirements
-
-- Python 3.12.2
-- PyTorch 2.2.1 with CUDA 11.8
-- nnU-Net v2.3.1
-- nibabel, tifffile, numpy, multiprocessing
-- [aind-smartspim-destripe](https://github.com/AllenNeuralDynamics/aind-smartspim-destripe) (for denoising)
-- [ORS Dragonfly 4.0](https://dragonfly.comet.tech/) (for manual annotation and refinement)
-- [ImageJ/Fiji](https://fiji.sc/) with Trainable Weka Segmentation plugin (for initial 2D segmentation)
-
-### Hardware
-
-Training was performed on an NVIDIA RTX A6000 (48 GB VRAM), 128 GB RAM, 24 logical processors, Ubuntu 24. The 48 GB VRAM accommodates 360×360×128 voxel patches; 24 GB VRAM accommodates approximately 50% of this volume. nnU-Net automatically adapts to available memory.
-
-### Environment Setup
-
-Before training, configure nnU-Net environment variables:
+The tested paper environment used Python 3.12, PyTorch 2.2.1 with CUDA 11.8, and nnU-Net v2.3.1.
 
 ```bash
-export nnUNet_raw="$PWD/nnUNet_raw"
-export nnUNet_preprocessed="$PWD/nnUNet_preprocessed"
-export nnUNet_results="$PWD/nnUNet_results"
+git clone https://github.com/alexmaltsev/DeepBranchAI.git
+cd DeepBranchAI
+
+# Install a CUDA build of PyTorch appropriate for your system first.
+python -m pip install torch==2.2.1 torchvision==0.17.1 --index-url https://download.pytorch.org/whl/cu118
+python -m pip install -e ".[nnunet,notebooks]"
 ```
+
+Windows and Linux conda setup scripts remain available as `install.bat` and `install.sh`.
+
+## Download A Checkpoint
+
+```python
+from deepbranchai.downloads import download_and_install_pretrained_weights
+from deepbranchai.paths import setup_environment
+
+paths = setup_environment(storage_dir="/path/to/deepbranchai-assets")
+checkpoint = download_and_install_pretrained_weights(paths, fold=0)
+print(checkpoint)
+```
+
+Use `fold=0`, `1`, `2`, `3`, or `4`. The helper installs the selected weight and its nnU-Net configuration under the configured `nnUNet_results`, `nnUNet_preprocessed`, and `nnUNet_raw` roots.
+
+## Fine-Tune On A Branching-Network Dataset
+
+Start with [`demo/Demo_Finetune.ipynb`](demo/Demo_Finetune.ipynb) and [`docs/Finetune_Custom_Data.md`](docs/Finetune_Custom_Data.md). The helper accepts paired 3D raw images and binary reference masks in TIFF, NIfTI, MHA, or MHD format, checks the split and volume shapes, converts the data to nnU-Net layout, and fine-tunes the released checkpoint.
+
+The accepted experiments were fine-tuning studies, not zero-shot evaluation. New domains should provide paired image/reference-label data and should be assessed with overlap and continuity-sensitive metrics.
+
+## Repository Map
+
+| Path | Contents |
+|---|---|
+| [`deepbranchai/`](deepbranchai/) | Reusable download, data-preparation, fine-tuning, inference, and metric helpers |
+| [`demo/`](demo/) | Destriping, custom fine-tuning, and VESSEL12 notebooks |
+| [`train/`](train/) | Source training and validation notebooks plus external-transfer protocol code |
+| [`results/`](results/README.md) | Accepted tables, per-volume metrics, statistics, and qualitative source masks |
+| [`docs/`](docs/) | Fine-tuning, storage, model, transfer, and reproducibility documentation |
+| [`scripts/`](scripts/) | Publication-result validation and statistical analysis scripts |
+| [`tests/`](tests/) | Unit tests for data handling, metrics, downloads, and workflow checks |
+
+## Reproduce The Reported Statistics
+
+```bash
+python scripts/compute_external_transfer_statistics.py
+python scripts/validate_publication_results.py
+```
+
+The first command recomputes the paired Wilcoxon signed-rank tests and Holm correction from the included out-of-fold per-volume measurements. The second verifies the accepted manuscript tables against their machine-readable CSV files. See [`docs/Reproducibility.md`](docs/Reproducibility.md).
+
+## VESSEL12 Resources
+
+The VESSEL12 notebook, checkpoint, and training package provide a lung-vasculature demonstration and fine-tuning example. These resources are available alongside the external-evaluation results for 3D-IRCADb, Plant CT roots, and AeroPath.
 
 ## Citation
 
-If you use DeepBranchAI or the cascade training workflow in your research, please cite:
+Citation metadata is provided in [`CITATION.cff`](CITATION.cff). Until the final publisher DOI is assigned, cite the accepted article as:
 
-```
-Maltsev, A.V.*, Hartnell, L.M.*, Ferrucci, L. DeepBranchAI: A Novel Cascade Workflow
-Enabling Accessible 3D Branching Network Segmentation. [Preprint/Journal TBD].
-```
+> Maltsev AV, Hartnell LM, Ferrucci L. DeepBranchAI: A Transferable 3D Segmentation Model for Branching Networks. *Frontiers in Artificial Intelligence*. Accepted, 2026.
 
-## License
+Model artifacts are available from [Zenodo record 19363534](https://zenodo.org/records/19363534). The earlier preprint record is available at [doi:10.64898/2026.03.25.714249](https://doi.org/10.64898/2026.03.25.714249).
 
-Released under the CC0 license.
+## License And Funding
 
-## Funding
+Code and repository materials are released under the [CC0 1.0 Universal dedication](LICENSE). Third-party datasets and comparator models retain their original licenses.
 
-This research was supported by the Intramural Research Program of the National Institutes of Health (NIH). The findings and conclusions presented in this paper are those of the authors and do not necessarily reflect the views of the NIH or the U.S. Department of Health and Human Services.
+This work was supported by the Intramural Research Program of the National Institutes of Health. The findings and conclusions are those of the authors and do not necessarily represent the views of the NIH or the U.S. Department of Health and Human Services.

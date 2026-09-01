@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use DeepBranchAI, cite the accepted article and the archived model record."
+title: "DeepBranchAI"
+type: software
+version: 1.0.0
+date-released: 2026-09-01
+authors:
+  - family-names: Maltsev
+    given-names: Alexander V.
+  - family-names: Hartnell
+    given-names: Lisa M.
+  - family-names: Ferrucci
+    given-names: Luigi
+repository-code: "https://github.com/alexmaltsev/DeepBranchAI"
+url: "https://zenodo.org/records/19363534"
+license: CC0-1.0
+keywords:
+  - 3D segmentation
+  - branching networks
+  - nnU-Net
+  - transfer learning
+  - FIB-SEM
+preferred-citation:
+  type: article
+  title: "DeepBranchAI: A Transferable 3D Segmentation Model for Branching Networks"
+  authors:
+    - family-names: Maltsev
+      given-names: Alexander V.
+    - family-names: Hartnell
+      given-names: Lisa M.
+    - family-names: Ferrucci
+      given-names: Luigi
+  journal: "Frontiers in Artificial Intelligence"
+  year: 2026

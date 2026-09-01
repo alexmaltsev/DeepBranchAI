@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package and test dependencies
+        run: python -m pip install --upgrade pip && python -m pip install -e ".[dev]"
+      - name: Run tests
+        run: python -m pytest -q
+      - name: Audit repository images
+        run: python scripts/audit_repository_images.py
+      - name: Validate publication tables
+        run: python scripts/validate_publication_results.py
+      - name: Reproduce paired transfer statistics
+        run: python scripts/compute_external_transfer_statistics.py
+      - name: Build package
+        run: python -m build

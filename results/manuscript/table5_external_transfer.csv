@@ -1,0 +1,10 @@
+dataset,n,model,dice_mean,dice_sd,cldice_mean,cldice_sd,abs_cc_error_mean,abs_cc_error_sd
+3D-IRCADb venous system,12,VesselFM fine-tune,0.464,0.056,0.360,0.098,111.47,45.91
+3D-IRCADb venous system,12,Scratch nnU-Net,0.638,0.093,0.563,0.100,25.60,3.24
+3D-IRCADb venous system,12,DeepBranchAI-pretrained fine-tune,0.679,0.080,0.629,0.100,27.17,5.06
+Plant root CT,29,3D U-Net root baseline,0.459,0.066,0.403,0.079,97.95,27.80
+Plant root CT,29,Scratch nnU-Net,0.557,0.023,0.568,0.060,25.47,17.05
+Plant root CT,29,DeepBranchAI-pretrained fine-tune,0.611,0.053,0.599,0.062,19.11,13.07
+AeroPath airway CT,27,MurineAirwaySegmentation cross-modality fine-tune,0.831,0.043,0.768,0.031,76.13,18.72
+AeroPath airway CT,27,Scratch nnU-Net,0.879,0.031,0.824,0.019,56.12,14.23
+AeroPath airway CT,27,DeepBranchAI-pretrained fine-tune,0.880,0.033,0.840,0.014,49.57,15.77

@@ -1,67 +1,38 @@
 # Storage And Downloads
 
-This guide explains how storage is resolved and what the downloader/stager installs.
+DeepBranchAI keeps code in the Git repository and large datasets, checkpoints, predictions, and nnU-Net intermediates in a configurable storage root.
 
-## Storage Model
+## Storage Layout
 
-The code directory stays in the repository. Large assets can live elsewhere.
-
-`deepbranchai.paths.setup_environment(...)` creates and returns these roots:
+`deepbranchai.paths.setup_environment(...)` creates:
 
 ```text
-base
-storage
-data
-weights
-tmp
-nnUNet_raw
-nnUNet_preprocessed
-nnUNet_results
+<storage>/
+|-- data/
+|-- weights/
+|-- tmp/
+|-- nnUNet_raw/
+|-- nnUNet_preprocessed/
+`-- nnUNet_results/
 ```
 
-## Default Behavior
-
-If you do not set `storage_dir`, then storage defaults to the repository root.
-
-That means this layout:
-
-```text
-Repo/
-├─ data/
-├─ weights/
-├─ tmp/
-├─ nnUNet_raw/
-├─ nnUNet_preprocessed/
-└─ nnUNet_results/
-```
-
-## External Storage
-
-If you set:
+Without `storage_dir`, the repository root is used. For real training, use a separate high-capacity location:
 
 ```python
-STORAGE_DIR = Path(r"F:\DeepBranchAI")
+from deepbranchai.paths import setup_environment
+
+paths = setup_environment(storage_dir="/data/DeepBranchAI")
 ```
 
-then the asset layout becomes:
+On Windows, a raw string avoids backslash escaping:
 
-```text
-F:\DeepBranchAI/
-├─ data/
-├─ weights/
-├─ tmp/
-├─ nnUNet_raw/
-├─ nnUNet_preprocessed/
-└─ nnUNet_results/
+```python
+paths = setup_environment(storage_dir=r"F:\DeepBranchAI")
 ```
-
-The repository still holds the code and notebooks. Only large assets move.
 
 ## Environment Variables
 
-You can configure storage in code or with environment variables.
-
-Supported variables:
+The same roots can be configured with:
 
 - `DEEPBRANCHAI_STORAGE_DIR`
 - `DEEPBRANCHAI_DATA_DIR`
@@ -71,135 +42,33 @@ Supported variables:
 - `DEEPBRANCHAI_NNUNET_PREPROCESSED`
 - `DEEPBRANCHAI_NNUNET_RESULTS`
 
-`storage_dir` is the simplest option when the roots should stay grouped together.
+`setup_environment` also sets the standard `nnUNet_raw`, `nnUNet_preprocessed`, and `nnUNet_results` variables for the current process.
 
-## How Relative Paths Resolve
-
-Inside `FinetuneConfig`:
-
-- `raw_dir`, `ground_truth_dir`, `predict_dir`, and `output_dir` resolve under `data`
-- `pretrained_weights` resolves under `weights` by default
-- `pretrained_weights` resolves under `nnUNet_results` if it begins with `nnUNet_results/...`
-
-Examples:
+## Download A Released Checkpoint
 
 ```python
-raw_dir="custom_finetune/raw"
+from deepbranchai.downloads import download_and_install_pretrained_weights
+from deepbranchai.paths import setup_environment
+
+paths = setup_environment(storage_dir="/data/DeepBranchAI")
+checkpoint = download_and_install_pretrained_weights(paths, fold=0)
 ```
 
-becomes:
-
-```text
-<data directory>/custom_finetune/raw
-```
-
-```python
-pretrained_weights="checkpoint_best.pth"
-```
-
-becomes:
-
-```text
-<weights directory>/checkpoint_best.pth
-```
-
-## Downloader And Stager
-
-The finetune notebook exposes:
-
-```python
-DOWNLOAD_AND_STAGE_VESSEL12 = True
-```
-
-That calls `download_and_stage_vessel12_example(config)`.
-
-## What Gets Downloaded
-
-### Pretrained Assets
-
-Downloaded under:
-
-```text
-<weights directory>/DeepBranchAI_Zenodo/
-```
-
-Installed into:
-
-```text
-<nnUNet_results>/Dataset4005_Mitochondria/
-```
-
-Default installed checkpoint:
+Valid folds are 0-4. The helper downloads the selected checkpoint, the mitochondrial `nnUNetPlans.json`, and `dataset.json` from [Zenodo](https://zenodo.org/records/19363534), then installs them into nnU-Net's expected layout:
 
 ```text
 <nnUNet_results>/Dataset4005_Mitochondria/
   nnUNetTrainer_100epochs__nnUNetPlans__3d_fullres/
-    fold_2/
+    fold_0/
       checkpoint_best.pth
 ```
 
-### VESSEL12 Training Archive
+Fold 0 is the default and matches the accepted paper's external-transfer initialization. Repeated calls reuse files that are already present.
 
-Archive location:
+## VESSEL12 Assets
 
-```text
-<data directory>/DeepBranchAI_VESSEL12_training.zip
-```
+The Zenodo record also contains a VESSEL12 checkpoint, demo archive, and training archive. The VESSEL12 notebooks download these through the corresponding helpers in `deepbranchai.downloads`. They provide lung-vasculature demonstration and fine-tuning materials alongside the external-transfer resources.
 
-Extracted training root:
+## Git Exclusions
 
-```text
-<data directory>/DeepBranchAI_VESSEL12_training/
-```
-
-Installed into nnU-Net raw layout:
-
-```text
-<nnUNet_raw>/Dataset3005_Mitochondria/
-├─ imagesTr/
-├─ labelsTr/
-└─ dataset.json
-```
-
-### Demo/Test Archive
-
-Archive location:
-
-```text
-<data directory>/DeepBranchAI_demo_data.zip
-```
-
-Extracted under:
-
-```text
-<data directory>/DeepBranchAI_demo_data/
-```
-
-## What Gets Staged For The Notebook
-
-After download/install, one helper stages files into the custom-data workflow:
-
-```text
-<data directory>/custom_finetune/
-├─ raw/
-├─ ground_truth/
-└─ predict/
-```
-
-Specifically:
-
-- one matched VESSEL12 training pair goes into `raw/` and `ground_truth/`
-- one demo raw volume goes into `predict/`
-
-## When To Use Which Mode
-
-Use repo-local storage when:
-
-- the data is small
-- you are only testing the notebook
-
-Use an external drive when:
-
-- the training archive is too large for the repo drive
-- you want checkpoints and nnU-Net intermediates off the system drive
-- you want one stable location like `F:\DeepBranchAI`
+The repository ignores all local storage roots and generated predictions. Do not force-add raw datasets, downloaded checkpoints, nnU-Net caches, or third-party model files. Accepted summary tables and compact result provenance are tracked under `results/`.

@@ -58,7 +58,7 @@ if errorlevel 1 (
 
 echo.
 echo Installing PyTorch with CUDA 11.8...
-python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+python -m pip install torch==2.2.1 torchvision==0.17.1 --index-url https://download.pytorch.org/whl/cu118
 if errorlevel 1 (
     set "ERROR_MSG=PyTorch installation failed."
     goto :fail
@@ -69,6 +69,14 @@ echo Installing DeepBranchAI dependencies...
 python -m pip install -r "%SCRIPT_DIR%requirements.txt"
 if errorlevel 1 (
     set "ERROR_MSG=Dependency installation failed."
+    goto :fail
+)
+
+echo.
+echo Installing the DeepBranchAI package...
+python -m pip install -e "%SCRIPT_DIR%" --no-deps
+if errorlevel 1 (
+    set "ERROR_MSG=DeepBranchAI package installation failed."
     goto :fail
 )
 

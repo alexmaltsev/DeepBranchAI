@@ -32,7 +32,7 @@ def main():
 
     PRETRAINED_WEIGHTS = str(
         paths['nnUNet_results'] / 'Dataset4005_Mitochondria' /
-        'nnUNetTrainer_100epochs__nnUNetPlans__3d_fullres' / 'fold_2' / 'checkpoint_best.pth'
+        'nnUNetTrainer_100epochs__nnUNetPlans__3d_fullres' / 'fold_0' / 'checkpoint_best.pth'
     )
     FOLD = 2
 

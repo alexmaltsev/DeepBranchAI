@@ -12,9 +12,9 @@ The notebook is a thin front end over the `deepbranchai` helper package. It can:
 4. Convert raw volumes to single-channel grayscale when possible.
 5. Check that masks are usable binary masks and binarize common non-binary masks automatically.
 6. Check the train/validation split, patch size, axis sizes, and GPU memory budget before training starts.
-5. Convert those volumes into nnU-Net training format.
-6. Fine-tune from a pretrained checkpoint.
-7. Run the fine-tuned model on new volumes.
+7. Convert those volumes into nnU-Net training format.
+8. Fine-tune from a pretrained checkpoint.
+9. Run the fine-tuned model on new volumes.
 
 ## Managed Workspace Layout
 
@@ -188,9 +188,16 @@ Relative checkpoint paths are resolved under:
 - `nnUNet_results/` if they start with `nnUNet_results/...`
 - `weights/` by default otherwise
 
+Set `pretrained_fold` to select one of the five released source checkpoints. Fold 0 is the default and is the checkpoint used to initialize the accepted paper's external transfer experiments.
+
+```python
+config = FinetuneConfig(pretrained_fold=0)
+```
+
 ## Notes
 
 - The demo notebook uses one labeled VESSEL12 case for training and a different labeled VESSEL12 case for validation when `USE_VESSEL12_DEMO = True`.
 - The full VESSEL12 fine-tuning pipeline lives under `train/finetune/`.
+- VESSEL12 provides an additional lung-vasculature demonstration and fine-tuning example alongside the external evaluation datasets.
 - For multi-channel 4D data, set `channel_index`.
 - The notebook is intentionally small; most behavior lives in `deepbranchai/custom_finetune.py`.

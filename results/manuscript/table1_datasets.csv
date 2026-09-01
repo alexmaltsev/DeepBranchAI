@@ -1,0 +1,5 @@
+dataset,structure,branching_style,study_role
+Skeletal-muscle mitochondrial dataset (FIB-SEM),Human skeletal-muscle mitochondrial reticulum,Dense intracellular branching network with heterogeneous surrounding ultrastructure,Source-domain training and 5-fold validation
+3D-IRCADb venous system (CT),Abdominal venous system,Clinical vascular network with elongated tubular anatomy,External fine-tuning
+3D plant-root dataset (CT),Plant root systems,Non-animal biological branching network with thin continuous roots,External fine-tuning
+AeroPath airway dataset (CT),Pulmonary airway trees,Clinical airway network with distal branches and pathological variation,External fine-tuning

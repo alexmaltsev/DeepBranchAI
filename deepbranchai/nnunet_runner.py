@@ -138,10 +138,10 @@ def install_weights(
     print(f"  {config_prefix} setup complete.")
 
 
-def finetune_from_pretrained(
+def train_nnunet_fold(
     dataset_id: int,
     fold: int,
-    pretrained_weights: str | Path,
+    pretrained_weights: str | Path | None = None,
     trainer: str = "nnUNetTrainer_100epochs",
     plans: str = "nnUNetPlans",
     configuration: str = "3d_fullres",
@@ -149,14 +149,15 @@ def finetune_from_pretrained(
     num_processes: int = 4,
     setup_env: bool = True,
 ) -> Path:
-    """Fine-tune a target dataset using nnU-Net's Python training API."""
+    """Train one nnU-Net fold from scratch or from a supplied checkpoint."""
     import torch
 
     if setup_env:
         setup_environment(verbose=False)
-    pretrained_weights = Path(pretrained_weights)
-    if not pretrained_weights.exists():
-        raise FileNotFoundError(f"Pretrained weights not found: {pretrained_weights}")
+    if pretrained_weights is not None:
+        pretrained_weights = Path(pretrained_weights)
+        if not pretrained_weights.exists():
+            raise FileNotFoundError(f"Pretrained weights not found: {pretrained_weights}")
 
     original_torch_load = torch.load
 
@@ -181,13 +182,39 @@ def finetune_from_pretrained(
         if max_epochs is not None:
             nnunet_trainer.num_epochs = max_epochs
 
-        maybe_load_checkpoint(nnunet_trainer, False, False, str(pretrained_weights))
+        if pretrained_weights is not None:
+            maybe_load_checkpoint(nnunet_trainer, False, False, str(pretrained_weights))
         nnunet_trainer.run_training()
         nnunet_trainer.perform_actual_validation(False)
 
         return Path(nnunet_trainer.output_folder) / "checkpoint_best.pth"
     finally:
         torch.load = original_torch_load
+
+
+def finetune_from_pretrained(
+    dataset_id: int,
+    fold: int,
+    pretrained_weights: str | Path,
+    trainer: str = "nnUNetTrainer_100epochs",
+    plans: str = "nnUNetPlans",
+    configuration: str = "3d_fullres",
+    max_epochs: int | None = None,
+    num_processes: int = 4,
+    setup_env: bool = True,
+) -> Path:
+    """Fine-tune a target dataset using nnU-Net's Python training API."""
+    return train_nnunet_fold(
+        dataset_id=dataset_id,
+        fold=fold,
+        pretrained_weights=pretrained_weights,
+        trainer=trainer,
+        plans=plans,
+        configuration=configuration,
+        max_epochs=max_epochs,
+        num_processes=num_processes,
+        setup_env=setup_env,
+    )
 
 
 def predict_nnunet(
