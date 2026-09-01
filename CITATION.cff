@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use DeepBranchAI, cite the accepted article and the archived model record."
+message: "If you use DeepBranchAI, cite the article and the archived model record."
 title: "DeepBranchAI"
 type: software
 version: 1.0.0
@@ -22,7 +22,7 @@ keywords:
   - FIB-SEM
 preferred-citation:
   type: article
-  title: "DeepBranchAI: A Transferable 3D Segmentation Model for Branching Networks"
+  title: "DeepBranchAI: a transferable 3D segmentation model for branching networks"
   authors:
     - family-names: Maltsev
       given-names: Alexander V.
@@ -32,3 +32,5 @@ preferred-citation:
       given-names: Luigi
   journal: "Frontiers in Artificial Intelligence"
   year: 2026
+  volume: "9"
+  doi: "10.3389/frai.2026.1862872"

@@ -4,11 +4,12 @@
 
 [![CI](https://github.com/alexmaltsev/DeepBranchAI/actions/workflows/ci.yml/badge.svg)](https://github.com/alexmaltsev/DeepBranchAI/actions/workflows/ci.yml)
 [![Zenodo](https://img.shields.io/badge/models-Zenodo-1682D4)](https://zenodo.org/records/19363534)
+[![Article DOI](https://img.shields.io/badge/DOI-10.3389%2Ffrai.2026.1862872-blue)](https://doi.org/10.3389/frai.2026.1862872)
 [![License: CC0](https://img.shields.io/badge/license-CC0--1.0-blue)](LICENSE)
 
 DeepBranchAI is a released 3D nnU-Net checkpoint trained on expert-refined skeletal-muscle mitochondrial focused ion beam scanning electron microscopy (FIB-SEM) labels. It is intended as a pretrained initialization for fine-tuning on 3D branching-network segmentation tasks, where small voxel errors can disconnect branches or create false connections.
 
-The paper, **DeepBranchAI: A Transferable 3D Segmentation Model for Branching Networks**, by Alexander V. Maltsev, Lisa M. Hartnell, and Luigi Ferrucci, has been accepted in *Frontiers in Artificial Intelligence*. Final article metadata and the publisher DOI will be added after publication.
+The paper, **DeepBranchAI: a transferable 3D segmentation model for branching networks**, by Alexander V. Maltsev, Lisa M. Hartnell, and Luigi Ferrucci, has been accepted in *Frontiers in Artificial Intelligence* and is in production. The assigned article DOI is [10.3389/frai.2026.1862872](https://doi.org/10.3389/frai.2026.1862872).
 
 ## Accepted-Paper Results
 
@@ -99,9 +100,9 @@ The VESSEL12 notebook, checkpoint, and training package provide a lung-vasculatu
 
 ## Citation
 
-Citation metadata is provided in [`CITATION.cff`](CITATION.cff). Until the final publisher DOI is assigned, cite the accepted article as:
+Citation metadata is provided in [`CITATION.cff`](CITATION.cff). Cite the article as:
 
-> Maltsev AV, Hartnell LM, Ferrucci L. DeepBranchAI: A Transferable 3D Segmentation Model for Branching Networks. *Frontiers in Artificial Intelligence*. Accepted, 2026.
+> Maltsev AV, Hartnell LM, Ferrucci L. (2026). DeepBranchAI: a transferable 3D segmentation model for branching networks. *Frontiers in Artificial Intelligence*, 9:1862872. https://doi.org/10.3389/frai.2026.1862872
 
 Model artifacts are available from [Zenodo record 19363534](https://zenodo.org/records/19363534). The earlier preprint record is available at [doi:10.64898/2026.03.25.714249](https://doi.org/10.64898/2026.03.25.714249).
 

@@ -2,7 +2,7 @@
 
 ## 1.0.0 - 2026-09-01
 
-Publication release aligned with the accepted manuscript, *DeepBranchAI: A Transferable 3D Segmentation Model for Branching Networks*.
+Publication release aligned with the accepted manuscript, *DeepBranchAI: a transferable 3D segmentation model for branching networks*.
 
 - Reframed the repository around the released transferable 3D checkpoint.
 - Added all five mitochondrial checkpoint links and fold-selectable downloads.

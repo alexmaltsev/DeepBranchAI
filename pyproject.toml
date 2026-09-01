@@ -48,6 +48,7 @@ dev = ["build", "pytest", "ruff"]
 Homepage = "https://github.com/alexmaltsev/DeepBranchAI"
 Repository = "https://github.com/alexmaltsev/DeepBranchAI"
 Artifacts = "https://zenodo.org/records/19363534"
+Paper = "https://doi.org/10.3389/frai.2026.1862872"
 
 [tool.setuptools]
 packages = ["deepbranchai"]

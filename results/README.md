@@ -1,6 +1,6 @@
 # Accepted-Paper Results
 
-This directory contains the machine-readable values reported in the accepted manuscript, *DeepBranchAI: A Transferable 3D Segmentation Model for Branching Networks*, plus the available per-volume evidence used to calculate them.
+This directory contains the machine-readable values reported in the accepted manuscript, *DeepBranchAI: a transferable 3D segmentation model for branching networks*, plus the available per-volume evidence used to calculate them.
 
 ## Reporting Conventions
 
